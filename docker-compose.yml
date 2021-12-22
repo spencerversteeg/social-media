@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data/'
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  api:
+    image: node:16
+    restart: unless-stopped
+    build: .devcontainer
+    command: npm run dev
+    volumes:
+      - .:/workspace:rw
+    working_dir: /workspace
+    ports:
+      - 8080:8080
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db/postgres
+    depends_on:
+      - db
+
+volumes:
+  pgdata: {}
