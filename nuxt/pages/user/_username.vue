@@ -1,32 +1,40 @@
 <template>
-  <main class="container">
-    <div v-if="!user">Loading...</div>
-    <div v-else class="profile">
-      <div class="profile__top">
-        <div class="profile__info">
-          <h2>@{{ user.name }}</h2>
-          <p>{{ user.followers }} followers</p>
-          <span>&bullet;</span>
-          <p>{{ user.following }} following</p>
+  <div>
+    <Modal name="editUser" @click="editUser">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate vitae
+      quo sunt doloremque veniam quae voluptatum impedit at rerum distinctio
+      dolor minima id deserunt, aliquid autem possimus adipisci animi! Sint
+      necessitatibus et debitis?
+    </Modal>
+    <main class="container">
+      <div v-if="!user">Loading...</div>
+      <div v-else class="profile">
+        <div class="profile__top">
+          <div class="profile__info">
+            <h2>@{{ user.name }}</h2>
+            <p>{{ user.followers }} followers</p>
+            <span>&bullet;</span>
+            <p>{{ user.following }} following</p>
+          </div>
+          <div
+            v-if="$store.state.user.id === user.id"
+            class="profile__follow"
+            @click="editUser"
+          >
+            <Button variant="secondary">Edit profile</Button>
+          </div>
+          <div v-else class="profile__follow" @click="followUser">
+            <Button v-if="user.followed" variant="secondary">Unfollow</Button>
+            <Button v-else>Follow</Button>
+          </div>
         </div>
-        <div
-          v-if="$store.state.user.id === user.id"
-          class="profile__follow"
-          @click="editUser"
-        >
-          <Button variant="secondary">Edit profile</Button>
+        <div class="profile__posts">
+          <Post v-for="post in user.Post" :key="post.id" :post="post" />
         </div>
-        <div v-else class="profile__follow" @click="followUser">
-          <Button v-if="user.followed" variant="secondary">Unfollow</Button>
-          <Button v-else>Follow</Button>
-        </div>
+        <pre>{{ JSON.stringify(user, 0, 2) }}</pre>
       </div>
-      <div class="profile__posts">
-        <Post v-for="post in user.Post" :key="post.id" :post="post" />
-      </div>
-      <pre>{{ JSON.stringify(user, 0, 2) }}</pre>
-    </div>
-  </main>
+    </main>
+  </div>
 </template>
 
 <script>
@@ -74,6 +82,7 @@ export default {
     },
     editUser() {
       console.log('add editing state');
+      this.$store.commit('modal/open', 'editUser');
     },
     submitEdits() {
       console.log('SUBMIT');

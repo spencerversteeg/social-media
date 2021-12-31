@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- nav -->
     <div class="nav__container">
       <nav class="nav">
         <div class="nav__left">
@@ -32,6 +33,20 @@ export default {
       username: this.$store.state.user.name,
     };
   },
+  computed: {
+    isOpen() {
+      return this.$store.getters['modal/active'];
+    },
+  },
+  watch: {
+    isOpen(newVal, oldVal) {
+      if (newVal) {
+        document.querySelector('body').classList.add('isOpen');
+      } else {
+        document.querySelector('body').classList.remove('isOpen');
+      }
+    },
+  },
   methods: {
     async logout() {
       await this.$axios.get(`http://localhost:8080/api/auth/logout`, {
@@ -46,7 +61,11 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+.isOpen {
+  overflow: hidden;
+}
+
 .nav {
   &__container {
     color: white;
