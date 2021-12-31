@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  box-sizing: border-box;
+
+  min-height: 100vh;
+}
+
+.container {
+  display: block;
+
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+
+  max-width: 1200px;
+
+  &--center {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.form {
+  overflow: hidden;
+
+  border: 1px solid #999;
+  border-radius: 0.5rem;
+  padding: 2rem;
+
+  &__wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    max-width: 30rem;
+    width: 100%;
+    padding: 2rem;
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.5rem;
+
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+
+  &__body {
+    p {
+      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+
+      text-align: center;
+    }
+
+    form {
+      .tc-input,
+      .tc-button {
+        margin-bottom: 1.5rem;
+      }
+
+      a {
+        display: block;
+      }
+
+      p {
+        color: red;
+        text-align: left;
+      }
+    }
+  }
+}
