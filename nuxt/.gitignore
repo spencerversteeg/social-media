@@ -89,6 +89,3 @@ sw.*
 
 # Vim swap files
 *.swp
-
-# Remove DB files
-dev.db
