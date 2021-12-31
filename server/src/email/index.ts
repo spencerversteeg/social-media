@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import handlebars from 'handlebars';
 import { inDevelopment } from '../utils';
 import EmailData from '../@types/EmailData';
+import { NodeMailerSettings } from '../@types/EmailData';
 
 const emailTemplate = (template: string): string =>
   fs.readFileSync(path.resolve(__dirname, `./templates/${template}.html`), 'utf8').toString();
@@ -34,17 +35,18 @@ const prepareTemplate = (templateData: EmailData) => {
   };
 };
 
-const productionData: unknown = {
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
+// TODO: Setup interface
+const productionData: NodeMailerSettings = {
+  host: process.env.EMAIL_HOST as string,
+  port: Number(process.env.EMAIL_PORT),
   secure: !inDevelopment,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.EMAIL_USER as string,
+    pass: process.env.EMAIL_PASS as string
   }
 };
 
-const developmentData = (user: string, pass: string) => {
+const developmentData = (user: string, pass: string): NodeMailerSettings => {
   return {
     host: 'smtp.ethereal.email',
     port: 587,
