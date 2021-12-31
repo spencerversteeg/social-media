@@ -1,15 +1,17 @@
 version: '3'
 
 services:
-  db:
-    image: postgres
-    restart: unless-stopped
-    ports:
-      - 5432:5432
-    volumes:
-      - 'pgdata:/var/lib/postgresql/data/'
-    environment:
-      POSTGRES_PASSWORD: postgres
+  # Was having troubles with Postgres connectivity dropping while DB running
+  # Swapped to SQLite for the time being.
+  # db:
+  #   image: postgres
+  #   restart: unless-stopped
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - 'pgdata:/var/lib/postgresql/data/'
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
 
   api:
     image: node:16
@@ -22,10 +24,8 @@ services:
     ports:
       - 8080:8080
     env_file: .env
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@db/postgres
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
 
 volumes:
   pgdata: {}
