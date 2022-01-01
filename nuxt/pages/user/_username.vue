@@ -1,10 +1,16 @@
 <template>
   <div>
-    <Modal name="editUser" @click="editUser">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate vitae
-      quo sunt doloremque veniam quae voluptatum impedit at rerum distinctio
-      dolor minima id deserunt, aliquid autem possimus adipisci animi! Sint
-      necessitatibus et debitis?
+    <Modal name="editUser" title="Edit your profile" @click="editUser">
+      <form @submit.prevent="submitEdits">
+        <Input id="name" v-model="form.name.value" label="Name" name="name" />
+        <Input
+          id="email"
+          v-model="form.email.value"
+          label="Email address"
+          name="email"
+        />
+        <Button type="submit">Save changes</Button>
+      </form>
     </Modal>
     <main class="container">
       <div v-if="!user">Loading...</div>
@@ -39,16 +45,28 @@
 
 <script>
 import Button from '@/components/Button';
+import Input from '@/components/Input';
 
 export default {
   name: 'ProfilePage',
   components: {
     Button,
+    Input,
   },
   middleware: 'auth',
   data() {
     return {
       user: null,
+      form: {
+        name: {
+          value: '',
+          error: undefined,
+        },
+        email: {
+          value: '',
+          error: undefined,
+        },
+      },
     };
   },
   async mounted() {
@@ -81,10 +99,26 @@ export default {
       }
     },
     editUser() {
-      console.log('add editing state');
       this.$store.commit('modal/open', 'editUser');
     },
-    submitEdits() {
+    async submitEdits() {
+      try {
+        const body = {};
+
+        if (this.form.name.value.length > 0) body.name = this.form.name.value;
+        if (this.form.email.value.length > 0)
+          body.email = this.form.email.value;
+
+        await this.$axios.put(`http://localhost:8080/api/user`, body, {
+          withCredentials: true,
+        });
+
+        this.$store.commit('modal/close', 'editUser');
+
+        this.$router.push(`/user/${body.name || this.user.name}`);
+      } catch (error) {
+        throw new Error(error);
+      }
       console.log('SUBMIT');
     },
   },

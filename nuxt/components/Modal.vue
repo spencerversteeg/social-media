@@ -5,16 +5,28 @@
     @click.self="close"
   >
     <div class="modal__wrapper">
-      <button @click="close">X</button>
+      <div class="modal__header">
+        <h2>{{ title }}</h2>
+        <div @click="close"><Icon name="x" /></div>
+      </div>
       <slot :close="close"></slot>
     </div>
   </div>
 </template>
 
 <script>
+import Icon from '@/components/Icon';
+
 export default {
   name: 'ModalComponent',
+  components: {
+    Icon,
+  },
   props: {
+    title: {
+      type: String,
+      default: 'Default title',
+    },
     name: {
       type: String,
       required: true,
@@ -58,6 +70,7 @@ export default {
   }
 
   &__wrapper {
+    border-radius: 0.5rem;
     background-color: #fff;
     padding: 1.5rem;
 
@@ -65,6 +78,23 @@ export default {
     max-width: 460px;
     width: 100vw;
     position: fixed;
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+    }
+
+    div {
+      cursor: pointer;
+    }
   }
 }
 </style>
