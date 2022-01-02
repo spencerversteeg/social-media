@@ -12,6 +12,25 @@ export const like: RequestHandler<never, HttpResponse, never, never, PostLocal> 
   } else {
     await client.like.delete({ where: { id: foundLike.id } });
   }
+  const foundPost = await client.post.findFirst({
+    where: { id: res.locals.post.id },
+    include: {
+      user: { select: { name: true } },
+      Like: { select: { userId: true } },
+      Comment: { select: { id: true, createdAt: true, message: true, user: { select: { name: true } } } },
+      _count: { select: { Like: true } }
+    }
+  });
 
-  responses.success(res);
+  if (!foundPost) {
+    responses.notFound(res);
+    return;
+  }
+
+  if (foundPost.Like.find((p) => p.userId === res.locals.user.id)) {
+    // @ts-ignore
+    foundPost.liked = true;
+  }
+
+  responses.success(res, foundPost);
 };

@@ -8,6 +8,7 @@ import responses from '../../utils/responses';
 import { sendEmail } from '../../email';
 import { updateSchema } from './validation';
 import { z } from 'zod';
+import { compileFunction } from 'vm';
 
 export const getLoggedInUser: RequestHandler<never, HttpResponse, never, never, UserLocal> = async (
   req,
@@ -18,7 +19,9 @@ export const getLoggedInUser: RequestHandler<never, HttpResponse, never, never, 
     return;
   }
 
-  res.status(200).json({ status: 'success', data: res.locals.user });
+  const { id, name, email } = res.locals.user;
+
+  res.status(200).json({ status: 'success', data: { id, name, email } });
 };
 
 export const updateLoggedInUser: RequestHandler<
@@ -40,8 +43,9 @@ export const updateLoggedInUser: RequestHandler<
     return;
   }
 
-  const { name, email } = req.body;
-  const user = await client.user.update({ where: { id: res.locals.user.id }, data: { name, email } });
+  // const { name, email } = req.body;
+
+  const user = await client.user.update({ where: { id: res.locals.user.id }, data: req.body });
 
   if (res.locals.user.email !== user.email) {
     await sendEmail({ to: res.locals.user.email, template: 'email-updated' });
@@ -74,12 +78,12 @@ export const getLoggedInUserPosts: RequestHandler<any, HttpResponse, never, neve
 };
 
 export const getUserPosts: RequestHandler<any, HttpResponse, never, never, never> = async (req, res): Promise<void> => {
-  if (!req.params.id) {
+  if (!req.params.name) {
     responses.notFound(res, 'Missing ID parameter');
     return;
   }
 
-  const post = await client.post.findMany({ where: { userId: req.params.id } });
+  const post = await client.post.findMany({ where: { user: { name: req.params.name } } });
   if (!post) {
     responses.notFound(res);
     return;
@@ -92,14 +96,15 @@ export const followUser: RequestHandler<any, HttpResponse, never, never, UserLoc
   req,
   res
 ): Promise<void> => {
-  if (!req.params.id) {
+  if (!req.params.name) {
     responses.notFound(res);
     return;
   }
 
-  const foundUser = await client.user.findFirst({ where: { id: req.params.id } });
+  const foundUser = await client.user.findFirst({ where: { name: req.params.name } });
   if (!foundUser) {
     responses.notFound(res);
+    console.log(1);
     return;
   }
 
@@ -140,5 +145,71 @@ export const followUser: RequestHandler<any, HttpResponse, never, never, UserLoc
     });
   }
 
-  responses.success(res);
+  const updatedUser = await client.user.findFirst({
+    where: { id: foundUser.id },
+    include: { _count: { select: { following: true, followers: true } } }
+  });
+
+  responses.success(res, { followers: updatedUser!._count!.followers, following: updatedUser!._count!.following });
+};
+
+export const getUserByName: RequestHandler<any, HttpResponse, never, never, UserLocal> = async (req, res) => {
+  if (!req.params.name) {
+    responses.notFound(res);
+    return;
+  }
+
+  const foundUser = await client.user.findFirst({
+    where: { name: req.params.name },
+    include: {
+      followers: true,
+      Post: {
+        include: {
+          _count: { select: { Like: true } },
+          Like: { select: { userId: true } },
+          user: { select: { name: true } }
+        }
+      },
+      _count: {
+        select: {
+          followers: true,
+          following: true
+        }
+      }
+    }
+  });
+
+  if (!foundUser) {
+    responses.notFound(res);
+    return;
+  }
+
+  foundUser.Post.forEach((post) => {
+    if (post.Like.find((p) => p.userId === res.locals.user.id)) {
+      // @ts-ignore
+      post.liked = true;
+    } else {
+      // @ts-ignore
+      post.liked = false;
+    }
+  });
+
+  if (foundUser.followers.find((u) => u.id === res.locals.user.id)) {
+    // @ts-ignore
+    foundUser.followed = true;
+  } else {
+    // @ts-ignore
+    foundUser.followed = false;
+  }
+
+  responses.success(res, {
+    id: foundUser.id,
+    name: foundUser.name,
+    createdAt: foundUser.createdAt,
+    // @ts-ignore
+    followed: foundUser.followed,
+    Post: foundUser.Post,
+    followers: foundUser._count!.followers,
+    following: foundUser._count!.following
+  });
 };

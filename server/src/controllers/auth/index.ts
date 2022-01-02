@@ -6,7 +6,7 @@ import { HttpResponse } from '../../@types/http';
 import { RequestHandler } from 'express';
 import { VerificationParameters } from '../../@types/auth';
 import bcrypt from 'bcryptjs';
-import { client } from '../../utils';
+import { client, inDevelopment } from '../../utils';
 import { generateVerificationToken } from '../../utils/generators';
 import { parseZodErrors } from '../../utils/parser';
 import responses from '../../utils/responses';
@@ -49,7 +49,7 @@ export const registerUser: RequestHandler<never, HttpResponse, z.infer<typeof re
     include: { UserVerification: true }
   });
 
-  const link = `http://localhost:8080/api/auth/verify/${user.UserVerification!.token}`;
+  const link = `${process.env.FRONTEND_URL}/verify/${user.UserVerification!.token}`;
 
   await sendEmail({ template: 'verify', to: user.email, link });
 
@@ -91,7 +91,7 @@ export const loginUser: RequestHandler<never, HttpResponse, z.infer<typeof login
 
   // TODO: Setup cookies for responses wrapped
   res
-    .cookie('Authorization', `${token}`, { maxAge: 1209600000 })
+    .cookie('Authorization', `${token}`, { maxAge: 1209600000, path: '/', httpOnly: true, secure: !inDevelopment })
     .json({ status: 'success', data: { id: user.id, name: user.name, email: user.email } });
 };
 
@@ -149,7 +149,7 @@ export const forgotPassword: RequestHandler<
   await sendEmail({
     to: user.email,
     template: 'forgot-password',
-    link: `http://localhost:8080/api/auth/reset/${passwordReset.token}`
+    link: `${process.env.FRONTEND_URL}/reset/${passwordReset.token}`
   });
 
   responses.success(res);

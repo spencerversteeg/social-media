@@ -5,14 +5,7 @@ import 'dotenv/config';
 import express, { Application } from 'express';
 import cors, { CorsOptions } from 'cors';
 
-const corsWhitelist = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:8080',
-  'http://localhost:8081',
-  'http://localhost:5432',
-  'production-domain-here.com'
-];
+const corsWhitelist = [`${process.env.FRONTEND_URL}`, 'http://localhost:8080'];
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {

@@ -9,7 +9,7 @@ import { like } from '../../controllers/post/like';
 const router = Router({ mergeParams: true });
 
 router.post('/', isUser, createPost);
-router.get('/', getPosts);
+router.get('/', isUser, getPosts);
 router.get('/:id', isUser, fetchPost, getPost);
 router.put('/:id', isUser, fetchPost, isPostAuthor, updatePost);
 router.delete('/:id', isUser, fetchPost, isPostAuthor, deletePost);

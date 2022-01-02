@@ -19,16 +19,32 @@ export const postComment: RequestHandler<any, HttpResponse, z.infer<typeof creat
 
   const newComment = await client.comment.create({
     data: {
-      userId: res.locals.user.id,
-      postId: res.locals.post.id,
+      post: {
+        connect: {
+          id: res.locals.post.id
+        }
+      },
+      user: {
+        connect: {
+          id: res.locals.user.id
+        }
+      },
       message: req.body.message
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true
+        }
+      }
     }
   });
   if (!newComment) {
     responses.internal(res, 'There was an issue posting your comment, please try again.');
   }
 
-  responses.success(res, newComment);
+  responses.success(res, { ...newComment, owner: true });
 };
 
 export const getComments: RequestHandler<any, HttpResponse, never, never, PostLocal> = async (
@@ -44,6 +60,13 @@ export const getComments: RequestHandler<any, HttpResponse, never, never, PostLo
     responses.notFound(res);
     return;
   }
+
+  comments.forEach((comment) => {
+    if (comment.userId === res.locals.user.id) {
+      // @ts-ignore
+      comment.owner = true;
+    }
+  });
 
   responses.success(res, comments);
 };
@@ -72,5 +95,23 @@ export const deleteComment: RequestHandler<any, HttpResponse, never, never, Post
 
   await client.comment.delete({ where: { id: foundComment.id } });
 
-  responses.success(res);
+  const comments = await client.comment.findMany({
+    where: { postId: res.locals.post.id },
+    select: { id: true, createdAt: true, message: true, user: { select: { id: true, name: true } } },
+    orderBy: { createdAt: 'desc' }
+  });
+
+  if (!comments) {
+    responses.notFound(res);
+    return;
+  }
+
+  comments.forEach((comment) => {
+    if (comment.user.id === res.locals.user.id) {
+      // @ts-ignore
+      comment.owner = true;
+    }
+  });
+
+  responses.success(res, comments);
 };

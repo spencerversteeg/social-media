@@ -12,7 +12,6 @@ export const isUser: RequestHandler[] = [
   async (req: Request, res: Response, next: NextFunction) => {
     const { cookies } = req;
     const secret = process.env.JWT_SECRET;
-
     if (!cookies || !cookies.Authorization) {
       responses.invalidToken(res);
       return;
@@ -25,7 +24,6 @@ export const isUser: RequestHandler[] = [
       responses.invalidToken(res);
       return;
     }
-
     res.locals.user = user;
     next();
   }

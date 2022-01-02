@@ -5,5 +5,24 @@ export interface UserLocal {
 }
 
 export interface PostLocal extends UserLocal {
-  post: Post;
+  post: Post & {
+    Like: {
+      userId: string;
+    }[];
+    Comment: {
+      id: string;
+      createdAt: Date;
+      message: string;
+      user: {
+        id: string;
+        name: string;
+      };
+    }[];
+    user: {
+      name: string;
+    };
+    _count: {
+      Like: number;
+    } | null;
+  };
 }

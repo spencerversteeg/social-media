@@ -23,11 +23,18 @@ export const createPost: RequestHandler<never, HttpResponse, z.infer<typeof crea
     data: {
       message: req.body.message,
       userId: res.locals.user.id
+    },
+    include: {
+      user: {
+        select: {
+          name: true
+        }
+      }
     }
   });
 
   if (!newPost) {
-    console.log('Could not create post');
+    console.log("Could not create post, something isn't right...");
     responses.internal(res);
     return;
   }
@@ -35,8 +42,28 @@ export const createPost: RequestHandler<never, HttpResponse, z.infer<typeof crea
   responses.success(res, newPost);
 };
 
-export const getPosts: RequestHandler<never, HttpResponse, never, never, never> = async (req, res): Promise<void> => {
-  const posts = await client.post.findMany({ where: {} });
+export const getPosts: RequestHandler<never, HttpResponse, never, never, UserLocal> = async (
+  req,
+  res
+): Promise<void> => {
+  const posts = await client.post.findMany({
+    where: {},
+    include: {
+      _count: { select: { Like: true } },
+      Like: { select: { userId: true } },
+      user: { select: { name: true } }
+    }
+  });
+
+  posts.forEach((post) => {
+    if (post.Like.find((p) => p.userId === res.locals.user.id)) {
+      // @ts-ignore
+      post.liked = true;
+    } else {
+      // @ts-ignore
+      post.liked = false;
+    }
+  });
 
   if (!posts) {
     responses.notFound(res);
@@ -47,7 +74,20 @@ export const getPosts: RequestHandler<never, HttpResponse, never, never, never> 
 };
 
 export const getPost: RequestHandler<any, any, never, never, PostLocal> = async (req, res): Promise<void> => {
-  responses.success(res, res.locals.post);
+  const data = { ...res.locals.post, liked: false };
+
+  if (data.Like.find((p: { userId: string }) => p.userId === res.locals.user.id)) {
+    data.liked = true;
+  }
+
+  data.Comment.forEach((comment: any) => {
+    if (comment.user.id === res.locals.user.id) {
+      // @ts-ignore
+      comment.owner = true;
+    }
+  });
+
+  responses.success(res, data);
 };
 
 export const updatePost: RequestHandler<any, HttpResponse, z.infer<typeof updateSchema>, never, PostLocal> = async (
