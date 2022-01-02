@@ -1,7 +1,7 @@
 <template>
   <div>
     <Modal name="editUser" title="Edit your profile" @click="editUser">
-      <form @submit.prevent="submitEdits">
+      <form class="edit" @submit.prevent="submitEdits">
         <Input id="name" v-model="form.name.value" label="Name" name="name" />
         <Input
           id="email"
@@ -82,9 +82,6 @@ export default {
     }
   },
   methods: {
-    // TODO: Setup following/not following
-    // TODO: Fix "liked" posts
-    // TODO: Update profile
     async followUser() {
       try {
         const { data } = await this.$axios.get(
@@ -119,7 +116,6 @@ export default {
       } catch (error) {
         throw new Error(error);
       }
-      console.log('SUBMIT');
     },
   },
 };
@@ -156,6 +152,12 @@ export default {
 
   .post {
     margin-bottom: 1rem;
+  }
+}
+
+.edit {
+  .tc-input {
+    margin-bottom: 1.5rem;
   }
 }
 </style>
