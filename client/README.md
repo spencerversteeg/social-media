@@ -1,4 +1,4 @@
-# Twitter Clone Client
+# Social Media Client
 
 ## Build Setup
 

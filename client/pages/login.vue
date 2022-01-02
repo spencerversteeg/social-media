@@ -4,7 +4,7 @@
       <div class="form">
         <div class="form__header">
           <h2>Sign in</h2>
-          <p>Welcome back to Twitter Clone</p>
+          <p>Welcome back to Social Media</p>
         </div>
         <div class="form__body">
           <form @submit.prevent="loginUser">

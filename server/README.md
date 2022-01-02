@@ -1,6 +1,6 @@
-# Express Typescript Boilerplate
+# Social Media Server
 
-This is a simple boilerplate with the base foundations for a typescript express application.
+This project with created with a simple boilerplate created by Spencer Versteeg, which contains the base foundations for a Express application.
 
 ## Stack
 
@@ -8,33 +8,24 @@ This is a simple boilerplate with the base foundations for a typescript express 
 - Express
 - Prisma
 - Nodemailer w/Handlebars
-- Jest [TODO]
 - ESLint
 - Prettier
 
-## Setup
+## To Run
 
-1. Clone the repository to your local machine
-
-```bash
-$ git clone git@github.com:spencerversteeg/express-typescript-boilerplate.git
-```
-
-2. Install dependencies
+1. Install dependencies
 
 ```bash
 $ yarn OR npm install
 ```
 
-3. Run the server
+2. Run the server
 
 ```bash
 $ yarn dev OR npm run dev
 ```
 
 ## To Build
-
-1. Run the build
 
 ```bash
 $ yarn build OR npm run build

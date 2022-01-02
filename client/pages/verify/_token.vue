@@ -7,8 +7,8 @@
         </div>
         <div class="form__body">
           <p>
-            Welcome to Twitter Clone! To continue to login, please click the
-            link below.
+            Welcome to Social Media! To continue to login, please click the link
+            below.
           </p>
           <nuxt-link to="/login">Login</nuxt-link>
         </div>

@@ -5,7 +5,7 @@
       <nav class="nav">
         <div class="nav__left">
           <nuxt-link to="/">
-            <h1>Twitter Clone</h1>
+            <h1>Social Media</h1>
           </nuxt-link>
         </div>
         <div class="nav__right">

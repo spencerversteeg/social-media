@@ -4,7 +4,7 @@
       <div class="form">
         <div v-if="!sent" class="form__header">
           <h2>Create an account</h2>
-          <p>Welcome to Twitter Clone</p>
+          <p>Welcome to Social Media</p>
         </div>
         <div v-else class="form__header">
           <h2>Account created</h2>
