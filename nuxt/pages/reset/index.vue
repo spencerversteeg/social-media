@@ -62,7 +62,7 @@ export default {
   methods: {
     async sendReset() {
       try {
-        await this.$axios.post(`http://localhost:8080/api/auth/reset`, {
+        await this.$axios.post(`${process.env.SERVER_URL}/api/auth/reset`, {
           email: this.email.value,
         });
 

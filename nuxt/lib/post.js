@@ -4,7 +4,7 @@ export const likePost = async (id) => {
       throw new Error('Missing ID ');
     }
     const newLike = await this.$axios.post(
-      `http://localhost:8080/api/post/${id}/like`,
+      `${process.env.SERVER_URL}/api/post/${id}/like`,
       {},
       { withCrendentials: true }
     );

@@ -134,7 +134,7 @@ export default {
     async registerUser() {
       try {
         await this.$axios.post(
-          `http://localhost:8080/api/auth/register`,
+          `${process.env.SERVER_URL}/api/auth/register`,
           {
             name: this.register.name.value,
             email: this.register.email.value,

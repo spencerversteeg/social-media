@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     async logout() {
-      await this.$axios.get(`http://localhost:8080/api/auth/logout`, {
+      await this.$axios.get(`${process.env.SERVER_URL}/api/auth/logout`, {
         withCredentials: true,
       });
       this.$store.commit('setUser', {});

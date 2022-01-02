@@ -99,7 +99,7 @@ export default {
   async mounted() {
     try {
       const { data } = await this.$axios.get(
-        `http://localhost:8080/api/post/${this.postId}`,
+        `${process.env.SERVER_URL}/api/post/${this.postId}`,
         {
           withCredentials: true,
         }
@@ -115,7 +115,7 @@ export default {
     async postComment() {
       try {
         const { data } = await this.$axios.post(
-          `http://localhost:8080/api/post/${this.postId}/comment`,
+          `${process.env.SERVER_URL}/api/post/${this.postId}/comment`,
           { message: this.newComment.value },
           { withCredentials: true }
         );
@@ -129,7 +129,7 @@ export default {
     async deleteComment(commentId) {
       try {
         const { data } = await this.$axios.delete(
-          `http://localhost:8080/api/post/${this.postId}/comment/${commentId}`,
+          `${process.env.SERVER_URL}/api/post/${this.postId}/comment/${commentId}`,
           { withCredentials: true }
         );
 
@@ -144,7 +144,7 @@ export default {
           throw new Error('Missing ID');
         }
         const newLike = await this.$axios.post(
-          `http://localhost:8080/api/post/${this.post.id}/like`,
+          `${process.env.SERVER_URL}/api/post/${this.post.id}/like`,
           {},
           {
             withCredentials: true,

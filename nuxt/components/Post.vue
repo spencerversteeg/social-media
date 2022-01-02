@@ -67,7 +67,7 @@ export default {
           throw new Error('Missing ID');
         }
         const newLike = await this.$axios.post(
-          `http://localhost:8080/api/post/${this.p.id}/like`,
+          `${process.env.SERVER_URL}/api/post/${this.p.id}/like`,
           {},
           {
             withCredentials: true,

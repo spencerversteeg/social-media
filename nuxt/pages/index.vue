@@ -45,9 +45,12 @@ export default {
   },
   async mounted() {
     try {
-      const { data } = await this.$axios.get(`http://localhost:8080/api/post`, {
-        withCredentials: true,
-      });
+      const { data } = await this.$axios.get(
+        `${process.env.SERVER_URL}/api/post`,
+        {
+          withCredentials: true,
+        }
+      );
       this.posts = data.data.reverse();
     } catch (error) {}
   },
@@ -55,7 +58,7 @@ export default {
     async submitPost() {
       try {
         const { data } = await this.$axios.post(
-          `http://localhost:8080/api/post`,
+          `${process.env.SERVER_URL}/api/post`,
           { message: this.newPost.value },
           { withCredentials: true }
         );

@@ -93,7 +93,7 @@ export default {
     async changePassword() {
       try {
         await this.$axios.patch(
-          `http://localhost:8080/api/auth/reset/${this.$route.params.token}`,
+          `${process.env.SERVER_URL}/api/auth/reset/${this.$route.params.token}`,
           {
             password: this.form.password.value,
             confirmPassword: this.form.confirmPassword.value,

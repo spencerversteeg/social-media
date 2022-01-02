@@ -34,7 +34,6 @@ export const createPost: RequestHandler<never, HttpResponse, z.infer<typeof crea
   });
 
   if (!newPost) {
-    console.log("Could not create post, something isn't right...");
     responses.internal(res);
     return;
   }

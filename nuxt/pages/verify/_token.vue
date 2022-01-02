@@ -23,7 +23,7 @@ export default {
   async mounted() {
     try {
       await this.$axios.get(
-        `http://localhost:8080/api/auth/verify/${this.$route.params.token}`
+        `${process.env.SERVER_URL}/api/auth/verify/${this.$route.params.token}`
       );
     } catch (error) {
       throw new Error(error);

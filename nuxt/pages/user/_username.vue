@@ -72,7 +72,7 @@ export default {
   async mounted() {
     try {
       const { data } = await this.$axios.get(
-        `http://localhost:8080/api/user/${this.$route.params.username}`,
+        `${process.env.SERVER_URL}/api/user/${this.$route.params.username}`,
         { withCredentials: true }
       );
 
@@ -85,7 +85,7 @@ export default {
     async followUser() {
       try {
         const { data } = await this.$axios.get(
-          `http://localhost:8080/api/user/${this.$route.params.username}/follow`,
+          `${process.env.SERVER_URL}/api/user/${this.$route.params.username}/follow`,
           { withCredentials: true }
         );
 
@@ -106,7 +106,7 @@ export default {
         if (this.form.email.value.length > 0)
           body.email = this.form.email.value;
 
-        await this.$axios.put(`http://localhost:8080/api/user`, body, {
+        await this.$axios.put(`${process.env.SERVER_URL}/api/user`, body, {
           withCredentials: true,
         });
 

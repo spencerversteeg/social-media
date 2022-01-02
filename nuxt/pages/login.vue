@@ -85,7 +85,7 @@ export default {
     async loginUser() {
       try {
         const { data } = await this.$axios.post(
-          `http://localhost:8080/api/auth/login`,
+          `${process.env.SERVER_URL}/api/auth/login`,
           {
             email: this.login.email.value,
             password: this.login.password.value,
